@@ -12,8 +12,10 @@ button:disabled { opacity: .35; cursor: default; }
 :focus-visible { outline: 2px solid #c8d5a2; outline-offset: 3px; }
 select { max-width: 180px; }
 output { font-size: 12px; min-width: 42px; text-align: center; font-variant-numeric: tabular-nums; }
-#reader { flex: 1; min-height: 0; overflow: auto; padding: 16px; }
+#reader { flex: 1; min-height: 0; overflow: auto; padding: 16px; scrollbar-gutter: stable; overflow-anchor: none; }
 .page { margin: 0 auto; width: var(--page-width); }
+.page + .page { margin-top: 16px; }
+.page:last-child { min-height: calc(var(--reader-height, 0px) - 32px); }
 .page img { display: block; width: 100%; height: auto; background: #20251d; }
 [hidden] { display: none !important; }
 #fullscreen { white-space: nowrap; }
@@ -22,13 +24,7 @@ output { font-size: 12px; min-width: 42px; text-align: center; font-variant-nume
 .page a { color: #dce5c6; }
 .image-error { padding: 30px; border: 1px solid #414936; }
 footer { display: flex; justify-content: space-between; gap: 16px; padding: 10px 24px; color: #a8ae9f; font-size: 11px; border-top: 1px solid #343a30; }
-.mobile-hint { display: none; }
 .message { margin: auto; padding: 30px; text-align: center; }
-@media (min-width: 760px) {
-  #reader { scrollbar-gutter: stable; overflow-anchor: none; }
-  .page + .page { margin-top: 16px; }
-  .page:last-child { min-height: calc(var(--reader-height, 0px) - 32px); }
-}
 :fullscreen .toolbar {
   position: fixed;
   inset: 0 0 auto;
@@ -40,21 +36,10 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 10px
   transform: none;
   pointer-events: auto;
 }
-@media (max-width: 759px) {
+@media (max-width: 759px), (hover: none) and (pointer: coarse) and (max-height: 600px) {
   body { height: auto; min-height: 100dvh; }
-  .toolbar { position: sticky; top: 0; flex-wrap: wrap; padding: 8px 10px; gap: 8px; }
-  .title { flex: 1; }
-  h1 { font-size: 19px; }
-  .title span { font-size: 9px; }
-  .pages { order: 3; width: 100%; }
-  .pages select { flex: 1; max-width: none; }
-  .zoom { gap: 3px; }
-  .zoom button { padding: 5px 8px; }
-  #reader { flex: none; overflow: auto; padding: 0; }
-  .page { margin-bottom: 10px; }
-  footer { padding: 16px 10px; }
-  .desktop-hint { display: none; }
-  #fullscreen { display: none; }
-  :fullscreen #fullscreen:not([hidden]) { display: inline-block; }
-  .mobile-hint { display: inline; }
+  .toolbar, footer { display: none; }
+  #reader { flex: none; padding: 0; scrollbar-gutter: auto; overflow-anchor: auto; }
+  .page + .page { margin-top: 10px; }
+  .page:last-child { min-height: 0; }
 }

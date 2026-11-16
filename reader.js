@@ -7,7 +7,7 @@ const zoomIn = document.querySelector('#zoom-in');
 const zoomOut = document.querySelector('#zoom-out');
 const fullscreen = document.querySelector('#fullscreen');
 const fullscreenMessage = document.querySelector('#fullscreen-message');
-const mobile = matchMedia('(max-width: 759px)');
+const mobile = matchMedia('(max-width: 759px), (hover: none) and (pointer: coarse) and (max-height: 600px)');
 let pages = [], current = 0, zoom = 1, ticking = false;
 let pan;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -67,7 +67,7 @@ function go(index) {
   const figure = reader.children[current];
   const top = figure.getBoundingClientRect().top;
   if (mobile.matches) {
-    window.scrollTo({ top: window.scrollY + top - toolbar.offsetHeight, behavior: 'instant' });
+    window.scrollTo({ top: window.scrollY + top, behavior: 'instant' });
   } else {
     const inset = parseFloat(getComputedStyle(reader).paddingTop);
     reader.scrollTo({ top: reader.scrollTop + top - reader.getBoundingClientRect().top - inset });
@@ -81,7 +81,7 @@ function setZoom(value, pointer) {
   const before = artwork.getBoundingClientRect();
   const bounds = reader.getBoundingClientRect();
   const anchorX = pointer?.clientX ?? bounds.left + reader.clientWidth / 2;
-  const anchorY = pointer?.clientY ?? (mobile.matches ? toolbar.offsetHeight : bounds.top + reader.clientHeight / 2);
+  const anchorY = pointer?.clientY ?? (mobile.matches ? 0 : bounds.top + reader.clientHeight / 2);
   const fractionY = (anchorY - before.top) / before.height;
   const fractionX = (anchorX - before.left) / before.width;
   const nextZoom = clamp(Math.round(value * 100) / 100, .5, 3);
@@ -167,6 +167,7 @@ async function start() {
   zoomOut.onclick = () => setZoom(zoom - .25);
   document.querySelector('#fit').onclick = () => setZoom(1);
   document.addEventListener('keydown', event => {
+    if (mobile.matches) return;
     if (event.ctrlKey || event.metaKey || event.altKey || /INPUT|SELECT|TEXTAREA/.test(event.target.tagName) || event.target.isContentEditable) return;
     const actions = { ArrowLeft: () => go(current - 1), ArrowRight: () => go(current + 1), '+': () => setZoom(zoom + .25), '=': () => setZoom(zoom + .25), '-': () => setZoom(zoom - .25), '0': () => setZoom(1) };
     if (actions[event.key]) { event.preventDefault(); actions[event.key](); }
@@ -177,7 +178,7 @@ async function start() {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
-      const line = mobile.matches ? toolbar.offsetHeight + 40
+      const line = mobile.matches ? 40
         : reader.getBoundingClientRect().top + Math.min(120, reader.clientHeight / 4);
       let visible = 0;
       for (const figure of reader.children) {
