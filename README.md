@@ -5,7 +5,7 @@ A minimal, static reader for the Iron Lung comic. Opens directly on the cover.
 - Phones: open directly on the cover, scroll down to read, and pinch to zoom.
 - Desktops: scroll continuously, jump with the page selector, or turn pages with the left and right arrow keys.
 - In **Full screen**, move the pointer to the top edge or tab to a control to reveal the toolbar. Press **Esc** or choose **Exit full screen** to return. Hold **Ctrl** and turn the mouse wheel over the artwork to zoom toward the pointer. Click and drag enlarged artwork to pan.
-- `+` / `-` zoom from 50–300%; `0` or Fit returns to the fitted page. Scroll to explore enlarged artwork. Browser zoom remains available.
+- `+` / `-` zoom from 50–300%; `0` or **Fit page** shows a whole page. **Fit width** uses all available width. Scroll to explore enlarged artwork. Browser zoom remains available.
 - Local artwork, lazy loading, no external services or runtime dependencies.
 
 ## Run locally

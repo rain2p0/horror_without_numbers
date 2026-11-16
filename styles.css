@@ -8,13 +8,16 @@ h1 { font-family: Georgia, serif; font-size: 22px; font-weight: normal; margin: 
 button, select { color: inherit; font: inherit; background: #24291f; border: 1px solid #414936; border-radius: 5px; min-height: 44px; padding: 7px 12px; }
 button { min-width: 44px; cursor: pointer; }
 button:hover:enabled, select:hover { background: #353e2b; }
+button[aria-pressed="true"] { background: #353e2b; border-color: #879570; }
 button:disabled { opacity: .35; cursor: default; }
+.fit-icon { display: inline-block; font: 20px/1 "Segoe UI Symbol", system-ui, sans-serif; }
+.width-icon { border-inline: 1px solid; padding-inline: 1px; font-size: 16px; }
 :focus-visible { outline: 2px solid #c8d5a2; outline-offset: 3px; }
 select { max-width: 180px; }
 output { font-size: 12px; min-width: 42px; text-align: center; font-variant-numeric: tabular-nums; }
 #reader { flex: 1; min-height: 0; overflow: auto; padding: 16px; scrollbar-gutter: stable; overflow-anchor: none; }
+#reader.fit-width { padding-inline: 0; }
 .page { margin: 0 auto; width: var(--page-width); }
-.page + .page { margin-top: 16px; }
 .page:last-child { min-height: calc(var(--reader-height, 0px) - 32px); }
 .page img { display: block; width: 100%; height: auto; background: #20251d; }
 [hidden] { display: none !important; }
@@ -40,6 +43,5 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 10px
   body { height: auto; min-height: 100dvh; }
   .toolbar, footer { display: none; }
   #reader { flex: none; padding: 0; scrollbar-gutter: auto; overflow-anchor: auto; }
-  .page + .page { margin-top: 10px; }
   .page:last-child { min-height: 0; }
 }

@@ -5,10 +5,14 @@ const previous = document.querySelector('#previous');
 const next = document.querySelector('#next');
 const zoomIn = document.querySelector('#zoom-in');
 const zoomOut = document.querySelector('#zoom-out');
+const fitPage = document.querySelector('#fit-page');
+const fitWidth = document.querySelector('#fit-width');
 const fullscreen = document.querySelector('#fullscreen');
 const fullscreenMessage = document.querySelector('#fullscreen-message');
 const mobile = matchMedia('(max-width: 759px), (hover: none) and (pointer: coarse) and (max-height: 600px)');
 let pages = [], current = 0, zoom = 1, ticking = false;
+let fitMode = 'page';
+let tallestAspect;
 let pan;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
@@ -20,15 +24,17 @@ function status() {
   document.querySelector('#zoom-level').textContent = `${Math.round(zoom * 100)}%`;
   zoomOut.disabled = zoom <= .5;
   zoomIn.disabled = zoom >= 3;
+  fitPage.setAttribute('aria-pressed', String(zoom === 1 && fitMode === 'page'));
+  fitWidth.setAttribute('aria-pressed', String(zoom === 1 && fitMode === 'width'));
 }
 
 function sizePages() {
+  const fitAcross = mobile.matches || fitMode === 'width';
+  reader.classList.toggle('fit-width', fitAcross);
+  const fit = fitAcross ? reader.clientWidth
+    : Math.min(reader.clientWidth - 32, (reader.offsetHeight - 32) / tallestAspect);
+  reader.style.setProperty('--page-width', `${Math.max(1, fit) * zoom}px`);
   reader.style.setProperty('--reader-height', `${reader.clientHeight}px`);
-  for (const figure of reader.querySelectorAll('.page')) {
-    const page = pages[Number(figure.dataset.index)];
-    const fit = mobile.matches ? reader.clientWidth : Math.min(reader.clientWidth - 32, (reader.clientHeight - 32) * page.width / page.height);
-    figure.style.setProperty('--page-width', `${Math.max(1, fit) * zoom}px`);
-  }
   const overflows = reader.scrollWidth > reader.clientWidth || reader.scrollHeight > reader.clientHeight;
   reader.classList.toggle('is-pannable', !mobile.matches && zoom > 1 && overflows);
 }
@@ -95,6 +101,14 @@ function setZoom(value, pointer) {
   status();
 }
 
+function fitTo(mode) {
+  fitMode = mode;
+  zoom = 1;
+  sizePages();
+  reader.scrollLeft = 0;
+  go(current);
+}
+
 function enableDesktopControls() {
   fullscreen.hidden = !document.fullscreenEnabled;
   fullscreen.onclick = async () => {
@@ -157,6 +171,7 @@ async function start() {
   if (!response.ok) throw new Error('Page list unavailable');
   pages = await response.json();
   if (!pages.length) throw new Error('No pages available');
+  tallestAspect = Math.max(...pages.map(page => page.height / page.width));
   pages.forEach((page, index) => select.add(new Option(`${page.label} · ${index + 1} / ${pages.length}`, index)));
   render();
   enableDesktopControls();
@@ -165,11 +180,12 @@ async function start() {
   select.onchange = () => go(Number(select.value));
   zoomIn.onclick = () => setZoom(zoom + .25);
   zoomOut.onclick = () => setZoom(zoom - .25);
-  document.querySelector('#fit').onclick = () => setZoom(1);
+  fitPage.onclick = () => fitTo('page');
+  fitWidth.onclick = () => fitTo('width');
   document.addEventListener('keydown', event => {
     if (mobile.matches) return;
     if (event.ctrlKey || event.metaKey || event.altKey || /INPUT|SELECT|TEXTAREA/.test(event.target.tagName) || event.target.isContentEditable) return;
-    const actions = { ArrowLeft: () => go(current - 1), ArrowRight: () => go(current + 1), '+': () => setZoom(zoom + .25), '=': () => setZoom(zoom + .25), '-': () => setZoom(zoom - .25), '0': () => setZoom(1) };
+    const actions = { ArrowLeft: () => go(current - 1), ArrowRight: () => go(current + 1), '+': () => setZoom(zoom + .25), '=': () => setZoom(zoom + .25), '-': () => setZoom(zoom - .25), '0': () => fitTo('page') };
     if (actions[event.key]) { event.preventDefault(); actions[event.key](); }
   });
   mobile.addEventListener('change', () => { zoom = 1; sizePages(); go(current); });
