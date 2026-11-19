@@ -10,6 +10,11 @@ const fitWidth = document.querySelector('#fit-width');
 const fullscreen = document.querySelector('#fullscreen');
 const fullscreenMessage = document.querySelector('#fullscreen-message');
 const mobile = matchMedia('(max-width: 759px), (hover: none) and (pointer: coarse) and (max-height: 600px)');
+const secondSession = new URLSearchParams(window.location.search).get('session') === '2';
+const sessionLabel = secondSession ? 'Session 2' : 'Session 1';
+document.title = `Rite of Spring — ${sessionLabel}`;
+document.querySelector('#reader-title').textContent = `Rite of Spring · ${sessionLabel}`;
+reader.setAttribute('aria-label', `Rite of Spring, ${sessionLabel}`);
 let pages = [], current = 0, zoom = 1, ticking = false;
 let fitMode = 'page';
 let tallestAspect;
@@ -48,7 +53,7 @@ function render() {
     figure.setAttribute('aria-label', page.label);
     const image = document.createElement('img');
     image.src = page.src;
-    image.alt = `Rite of Spring — ${page.label}`;
+    image.alt = `Rite of Spring — ${sessionLabel}, ${page.label}`;
     image.width = page.width;
     image.height = page.height;
     image.loading = index < 2 ? 'eager' : 'lazy';
@@ -167,7 +172,7 @@ function enableDesktopControls() {
 }
 
 async function start() {
-  const response = await fetch('./pages.json');
+  const response = await fetch(secondSession ? './pages-session-2.json' : './pages.json');
   if (!response.ok) throw new Error('Page list unavailable');
   pages = await response.json();
   if (!pages.length) throw new Error('No pages available');

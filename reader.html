@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111310">
+  <meta name="description" content="Read Rite of Spring, an Iron Lung comic. Scroll through the story, zoom into the artwork, and turn pages with your keyboard.">
+  <title>Rite of Spring — Iron Lung</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./reader.js"></script>
+</head>
+<body>
+  <header class="toolbar">
+    <div class="title"><a class="all-sessions" href="./">← All sessions</a><h1 id="reader-title">Rite of Spring</h1></div>
+    <nav aria-label="Comic pages" class="pages">
+      <button id="previous" aria-label="Previous page" title="Previous page (←)">←</button>
+      <select id="page-select" aria-label="Choose comic page"></select>
+      <button id="next" aria-label="Next page" title="Next page (→)">→</button>
+    </nav>
+    <div class="zoom" role="group" aria-label="Zoom controls">
+      <button id="zoom-out" aria-label="Zoom out" title="Zoom out (−)">−</button>
+      <output id="zoom-level" aria-live="polite">100%</output>
+      <button id="zoom-in" aria-label="Zoom in" title="Zoom in (+)">+</button>
+      <button id="fit-page" type="button" aria-label="Fit page" title="Fit page (0)" aria-pressed="true"><span class="fit-icon" aria-hidden="true">⛶</span></button>
+      <button id="fit-width" type="button" aria-label="Fit width" title="Fit width" aria-pressed="false"><span class="fit-icon width-icon" aria-hidden="true">↔</span></button>
+      <button id="fullscreen" type="button" hidden>Full screen</button>
+    </div>
+  </header>
+  <main id="reader" aria-label="Rite of Spring comic" tabindex="0"><p class="message">Loading the comic…</p></main>
+  <footer><span id="page-status" aria-live="polite"></span><span>Scroll or use ← → to turn pages · Ctrl + wheel to zoom · Drag to pan</span><span id="fullscreen-message" role="status" hidden></span></footer>
+  <a class="all-sessions mobile-sessions" href="./">← All sessions</a>
+  <noscript><p class="message">Enable JavaScript to use the comic reader.</p></noscript>
+</body>
+</html>

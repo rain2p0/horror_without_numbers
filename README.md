@@ -1,6 +1,6 @@
 # Rite of Spring
 
-A minimal, static reader for the Iron Lung comic. Opens directly on the cover.
+A minimal, static reader for the Iron Lung comic. The landing page lists the two sessions in order. Select a title page to open that session in the reader.
 
 - Phones: open directly on the cover, scroll down to read, and pinch to zoom.
 - Desktops: scroll continuously, jump with the page selector, or turn pages with the left and right arrow keys.
@@ -18,9 +18,9 @@ Run `npm run build`. Upload the contents of `dist/` to any static host. All asse
 
 ## Artwork
 
-Source: Google Drive → Iron Lung → comics. Includes the cover followed by pages 00–09, preserving the source numbering. The PNG files are full-resolution originals for readable zooming.
+Source: Google Drive → Iron Lung → comics. Session 1 includes its cover and pages 00–09. Session 2 includes its title page and pages 01–17. The PNG files are full-resolution originals for readable zooming.
 
-To add pages, copy `Iron-Lung-Page-NN.png` into `public/comics/` and rebuild. The build reads image dimensions and orders pages numerically. Replace an existing file to update its artwork.
+To add pages, copy `Iron-Lung-Page-NN.png` for Session 1 or `Iron-Lung-Session-02-Page-NN.png` for Session 2 into `public/comics/` and rebuild. The build reads image dimensions and orders each session numerically. Keep one file per page number when replacing artwork.
 
 ## GitHub Pages
 
