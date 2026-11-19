@@ -14,21 +14,31 @@ async function describePage(name, label) {
 }
 
 const sessions = [
-  { title: 'Iron-Lung-Cover.png', label: 'Cover', numbered: /^Iron-Lung-Page-(\d+)\.png$/, manifest: 'pages.json' },
-  { title: 'Iron-Lung-Session-02-Title.png', label: 'Title page', numbered: /^Iron-Lung-Session-02-Page-(\d+)\.png$/, manifest: 'pages-session-2.json' },
+  {
+    opening: [['Iron-Lung-pre-Title.png', 'Pre-title page'], ['Iron-Lung-Cover.png', 'Cover']],
+    numbered: /^Iron-Lung-Page-(\d+)\.png$/,
+    manifest: 'pages.json',
+  },
+  {
+    opening: [['Iron-Lung-Session-02-Title.png', 'Title page']],
+    numbered: /^Iron-Lung-Session-02-Page-(\d+)\.png$/,
+    manifest: 'pages-session-2.json',
+  },
 ];
 await mkdir(output, { recursive: true });
 await cp(path.join(root, 'public'), output, { recursive: true });
 for (const file of ['index.html', 'reader.html', 'styles.css', 'reader.js']) {
   await copyFile(path.join(root, file), path.join(output, file));
 }
-for (const { title, label, numbered, manifest } of sessions) {
+for (const { opening, numbered, manifest } of sessions) {
   const numberedPages = names.flatMap(name => {
     const match = name.match(numbered);
     return match ? [{ name, number: Number(match[1]) }] : [];
   }).sort((a, b) => a.number - b.number);
-  const cover = await describePage(title, label);
-  const pages = await Promise.all(numberedPages.map(({ name, number }) => describePage(name, `Page ${number}`)));
-  await writeFile(path.join(output, manifest), JSON.stringify([cover, ...pages], null, 2));
+  const pages = await Promise.all([
+    ...opening.map(([name, label]) => describePage(name, label)),
+    ...numberedPages.map(({ name, number }) => describePage(name, `Page ${number}`)),
+  ]);
+  await writeFile(path.join(output, manifest), JSON.stringify(pages, null, 2));
 }
 console.log('Built Rite of Spring with both sessions.');
